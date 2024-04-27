@@ -1,10 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
 	"text/template"
+	"time"
 )
 
 type TodoItem struct {
@@ -13,13 +15,9 @@ type TodoItem struct {
 	Date string
 }
 
-func remove(slice []TodoItem, s int) []TodoItem {
-	return append(slice[:s], slice[s+1:]...)
-}
-
 func main() {
 	items := map[int]TodoItem{}
-	lastItemID := -1
+	lastInsertedItemID := 0
 
 	index := func(w http.ResponseWriter, r *http.Request) {
 		tmpl := template.Must(template.ParseFiles("www/index.html"))
@@ -30,8 +28,12 @@ func main() {
 		tmpl := template.Must(template.ParseFiles("www/listItems.html"))
 
 		var itemsSlice []TodoItem
-		for _, value := range items {
-			itemsSlice = append(itemsSlice, value)
+		for i := 0; i < lastInsertedItemID; i++ {
+			value, ok := items[i]
+			if ok {
+				itemsSlice = append(itemsSlice, value)
+			}
+
 		}
 		context := map[string][]TodoItem{
 			"Items": itemsSlice,
@@ -42,10 +44,12 @@ func main() {
 
 	addItem := func(w http.ResponseWriter, r *http.Request) {
 		text := r.PostFormValue("text")
-		date := "27.04.2024"
+		date := time.Now().Format("02.01.2006")
 
-		lastItemID += 1
-		items[lastItemID] = TodoItem{Id: lastItemID, Text: text, Date: date}
+		if text != "" {
+			items[lastInsertedItemID] = TodoItem{Id: lastInsertedItemID, Text: text, Date: date}
+			lastInsertedItemID += 1
+		}
 
 		listItems(w, r)
 	}
@@ -63,5 +67,6 @@ func main() {
 	http.HandleFunc("/addItem", addItem)
 	http.HandleFunc("/removeItem", removeItem)
 
+	fmt.Println("Listening...")
 	log.Fatal(http.ListenAndServe(":8000", nil))
 }

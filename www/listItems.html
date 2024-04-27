@@ -1,6 +1,6 @@
-<div class="flex flex-col items-center">
+<div class="flex flex-col-reverse items-center">
     {{ range .Items }}
-        <div class="m-3 bg-neutral-200 shadow p-3 flex justify-between w-96">
+        <div class="m-3 bg-neutral-200 shadow p-3 flex justify-between w-96 fade-in opacity-0 transition-all duration-300">
             <div>
                 {{ .Text }}
                 <p class="text-neutral-500">{{ .Date }}</p>
@@ -13,3 +13,10 @@
         </div>
     {{ end }}
 </div>
+
+<script>
+    document.querySelectorAll('.fade-in').forEach(function(item) {
+        item.classList.remove('opacity-0')
+        item.classList.add('opacity-100')
+    })
+</script>
