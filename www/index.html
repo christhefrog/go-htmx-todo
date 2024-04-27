@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <title>Document</title>
+</head>
+<body class=" h-screen w-screen p-8 bg-neutral-100">
+    <h1 class="text-3xl text-center mb-8">To-do list</h1>
+
+    <form class="flex justify-center mb-4" autocomplete="off" hx-post="addItem" hx-target="#items"  hx-on::after-request="this.reset()">
+        <input type="text" class="p-2 w-80" placeholder="Add an item..." id="text" name="text">
+        <button type="submit" class="p-2 bg-neutral-200 w-16">Add</button>
+    </form>
+
+    <div id="items" hx-get="/listItems" hx-trigger="load" hx-swap="innerHTML"></div>
+</body>
+</html>

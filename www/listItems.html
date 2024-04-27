@@ -1,0 +1,15 @@
+<div class="flex flex-col items-center">
+    {{ range .Items }}
+        <div class="m-3 bg-neutral-200 shadow p-3 flex justify-between w-96">
+            <div>
+                {{ .Text }}
+                <p class="text-neutral-500">{{ .Date }}</p>
+            </div>
+            <div class="flex items-center mr-1 text-xl">
+                <button hx-post="/removeItem" hx-target="#items" id="itemid" name="itemid" value="{{ .Id }}">
+                    ❌
+                </button>
+            </div> 
+        </div>
+    {{ end }}
+</div>
