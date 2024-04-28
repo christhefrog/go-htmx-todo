@@ -1,12 +1,15 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
 	"strconv"
 	"text/template"
 	"time"
+
+	_ "github.com/glebarez/go-sqlite"
 )
 
 type TodoItem struct {
@@ -18,6 +21,20 @@ type TodoItem struct {
 func main() {
 	items := map[int]TodoItem{}
 	lastInsertedItemID := 0
+
+	db, _ := sql.Open("sqlite", "sql.db")
+	defer db.Close()
+
+	db.Exec(`create table if not exists todoitems (id INT NOT NULL PRIMARY KEY, text VARCHAR(256) NOT NULL, date VARCHAR(16) NOT NULL)`)
+
+	rows, _ := db.Query(`select id, text, date from todoitems order by id`)
+
+	for rows.Next() {
+		id, text, date := 0, "", ""
+		rows.Scan(&id, &text, &date)
+		items[id] = TodoItem{Id: id, Text: text, Date: date}
+		lastInsertedItemID = id + 1
+	}
 
 	index := func(w http.ResponseWriter, r *http.Request) {
 		tmpl := template.Must(template.ParseFiles("www/index.html"))
@@ -33,8 +50,8 @@ func main() {
 			if ok {
 				itemsSlice = append(itemsSlice, value)
 			}
-
 		}
+
 		context := map[string][]TodoItem{
 			"Items": itemsSlice,
 		}
@@ -48,6 +65,7 @@ func main() {
 
 		if text != "" {
 			items[lastInsertedItemID] = TodoItem{Id: lastInsertedItemID, Text: text, Date: date}
+			db.Exec(`insert into todoitems (id, text, date) values (?, ?, ?)`, lastInsertedItemID, text, date)
 			lastInsertedItemID += 1
 		}
 
@@ -58,6 +76,7 @@ func main() {
 		id, _ := strconv.Atoi(r.PostFormValue("itemid"))
 
 		delete(items, id)
+		db.Exec(`delete from todoitems where id = ?`, id)
 
 		listItems(w, r)
 	}
