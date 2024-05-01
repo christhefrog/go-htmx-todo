@@ -11,7 +11,7 @@
 ### 🤔 Why?
 
 I stumbled upon some videos covering htmx and got interested. Turns out it is often paired with Go, which I'm learning, so I decided to give it a try! \
-Because of lack of tutorials on htmx, it quite was an average experience. I learned that its the best to stick to react and other mainstream frameworks. 😃 \
+Because of lack of tutorials on htmx, it was quite an average experience. I learned that its the best to stick to react and other mainstream frameworks. 😃 \
 _(I still love Go tho! 💗)_
 
 <!-- TechStack -->

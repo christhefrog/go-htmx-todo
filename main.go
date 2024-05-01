@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"html"
 	"log"
 	"net/http"
 	"strconv"
@@ -47,6 +48,7 @@ func main() {
 		var itemsSlice []TodoItem
 		for i := 0; i < lastInsertedItemID; i++ {
 			value, ok := items[i]
+			value.Text = html.EscapeString(value.Text)
 			if ok {
 				itemsSlice = append(itemsSlice, value)
 			}
