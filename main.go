@@ -61,6 +61,18 @@ func main() {
 		tmpl.Execute(w, context)
 	}
 
+	lastItem := func(w http.ResponseWriter, _ *http.Request) {
+		tmpl := template.Must(template.ParseFiles("www/listItems.html"))
+
+		item := items[lastInsertedItemID-1]
+		item.Text = html.EscapeString(item.Text)
+		context := map[string][]TodoItem{
+			"Items": {item},
+		}
+
+		tmpl.Execute(w, context)
+	}
+
 	addItem := func(w http.ResponseWriter, r *http.Request) {
 		text := r.PostFormValue("text")
 		date := time.Now().Format("02.01.2006")
@@ -71,7 +83,7 @@ func main() {
 			lastInsertedItemID += 1
 		}
 
-		listItems(w, r)
+		lastItem(w, r)
 	}
 
 	removeItem := func(w http.ResponseWriter, r *http.Request) {

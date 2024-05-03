@@ -1,22 +1,13 @@
-<div class="flex flex-col-reverse items-center">
-    {{ range .Items }}
-        <div class="m-3 bg-neutral-200 shadow p-3 flex justify-between w-96 fade-in opacity-0 transition-all duration-300">
-            <div>
-                {{ .Text }}
-                <p class="text-neutral-500">{{ .Date }}</p>
-            </div>
-            <div class="flex items-center mr-1 text-xl">
-                <button hx-post="/removeItem" hx-target="#items" id="itemid" name="itemid" value="{{ .Id }}">
-                    ❌
-                </button>
-            </div> 
+{{ range .Items }}
+    <div class="m-3 bg-neutral-200 shadow p-3 flex justify-between w-96 fade-in transition-all duration-300">
+        <div>
+            {{ .Text }}
+            <p class="text-neutral-500">{{ .Date }}</p>
         </div>
-    {{ end }}
-</div>
-
-<script>
-    document.querySelectorAll('.fade-in').forEach(function(item) {
-        item.classList.remove('opacity-0')
-        item.classList.add('opacity-100')
-    })
-</script>
+        <div class="flex items-center mr-1 text-xl">
+            <button hx-post="/removeItem" hx-target="#items" hx-swap="innerHTML" id="itemid" name="itemid" value="{{ .Id }}">
+                ❌
+            </button>
+        </div> 
+    </div>
+{{ end }}
